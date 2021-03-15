@@ -24,6 +24,12 @@ sdk install springboot
 ```
 
 ## 명령어
+
+### 자바 버전 변경 
+1. Gradle 버전 마다 지원하는 Java 버전이 있음으로 적절하게 맞춰준다. 
 ```
-sudo update-alternatives --config java // 자바 버전 변경 
+1. sudo update-alternatives --config java // 자바 버전 변경
+2. sudo update-alternatives --config javac // 자바 버전 변경
+3. export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64(원하는 버전)
+
 ```
