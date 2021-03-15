@@ -22,3 +22,8 @@ source /home/yghong/.sdkman/bin/sdkman-init.sh
 ```
 sdk install springboot
 ```
+
+## 명령어
+```
+sudo update-alternatives --config java // 자바 버전 변경 
+```
