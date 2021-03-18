@@ -58,3 +58,13 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
   </mvc:interceptor>
 </mvc:interceptors>
 ```
+5. constructor-arg
+```
+생성자를 통해 빈을 주입 받는 경우 생성자의 Value를 지정할 수 있다.  ref=? value=?
+<bean id="hello" class="org.springframework.core.io.FileSystemResource">
+  <constructor-arg>
+    <value>/home/web/temp</value>
+  </constructor-arg>
+</bean>
+```
+
