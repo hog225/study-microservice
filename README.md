@@ -33,3 +33,13 @@ sdk install springboot
 3. export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64(원하는 버전)
 
 ```
+
+### Spring Anotation
+1. @GetMapping
+	Post, Put, Delete, Patch 와 같이 메서드 위에 쓰인다. 
+2. @RequestMappring
+	Class 에 사용됨, @RequestMappring("/user")
+3. @RestController
+	View 가 아닌 JSON으로 데이터를 리턴 할 필요가 있을때 
+
+
