@@ -34,6 +34,7 @@ sdk install springboot
 
 ```
 
+
 ### Spring Anotation
 1. @GetMapping
 	Post, Put, Delete, Patch 와 같이 메서드 위에 쓰인다. 
@@ -41,5 +42,41 @@ sdk install springboot
 	Class 에 사용됨, @RequestMappring("/user")
 3. @RestController
 	View 가 아닌 JSON으로 데이터를 리턴 할 필요가 있을때 
+
+
+### Spring Legacy
+
+1.component-scan
+```
+default annotaion(Component Controller Service Repository)이 붙은 클래스를 찾아 빈을 생성한다. 
+<context:component-scan base-package="" use-default-filters="false">
+  <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+</context:component-scan>
+```
+2. mvc:annotation-driven
+```
+spring MVC 컴포넌트들을 디폴트 설정으로 활성화 HandlerMapping 과 Adaptor 를 Bean으로 등록 해줌 
+```
+4. mvc:interceptors
+```
+DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 처리하는 인터셉터를 지정한다. 인터셉터 구현은 HandlerInterceptor 인터페이스를 구현하던지 HandlerInterceptorAdapter 클래스를 상속 받아서 구현한다.
+<mvc:interceptors>
+  <mvc:interceptor>
+    <mvc:mapping path="/**"/>
+    <mvc:exclude-mapping path="/image/**"/>
+    
+    <bean class="package.myInterceptor" />
+  </mvc:interceptor>
+</mvc:interceptors>
+```
+5. constructor-arg
+```
+생성자를 통해 빈을 주입 받는 경우 생성자의 Value를 지정할 수 있다.  ref=? value=?
+<bean id="hello" class="org.springframework.core.io.FileSystemResource">
+  <constructor-arg>
+    <value>/home/web/temp</value>
+  </constructor-arg>
+</bean>
+```
 
 
