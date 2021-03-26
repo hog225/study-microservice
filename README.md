@@ -42,6 +42,11 @@ sdk install springboot
 	Class 에 사용됨, @RequestMappring("/user")
 3. @RestController
 	View 가 아닌 JSON으로 데이터를 리턴 할 필요가 있을때 
+4. @Autowired 
+	의존성 주입에 사용됨 web.xml constructor-agrg 태그 선언하고 @Bean으로 의존성 주입하는 방법과 동일
+	의존성 주입이란 클래스 내부에서 객체를 할당하는게 아닌 외부에서 받는것
+5. @Component
+	Class 에서 빈을 직접 등록하기 위함 @ComponentScan 애노테이션으로 @Component 애노테이션을 스캔 하여 빈으로 등록해 줄 수 있음 
 
 
 ### Spring Legacy
