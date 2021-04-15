@@ -84,4 +84,25 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 </bean>
 ```
 
+## 도구 
+1. Spring profile
+도커, 로털머신, 개발서버, 운영서버등 환경별 구성을 가능하게 해줌 
+2. actuator
+어플리케이션 상태를 관리 해주는 역할 health, meter 등등 
+3. docker 컴포즈 
+  전체 마이크로서비비스 시스템 환경을 관리할 수 있다. docker-compose up/down 명령어로 살리고 죽일 수 있다. 
+  docker-compose.yml 에 마이크로서비스별 세팅을 할 수 있다. 
+
+4. 스프링폭스 
+공개 API 문서화, 스웨거 기반의 문서를 런타임에 생성하는 스프링 폭스를 사용 swagger $HOST:$PORT/swagger-ui/index.html
+
+## Docker
+### Build and start
+1. 스프링 프로파일 설정 resource 및에 application.yml
+2. docker 파일 설정 
+1. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
+2. docker build -t product-service . 
+3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
+
+
 
