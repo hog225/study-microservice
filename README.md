@@ -23,6 +23,9 @@ source /home/yghong/.sdkman/bin/sdkman-init.sh
 sdk install springboot
 ```
 
+## Gradle 
+1. Gradle refresh => .\gradlew --refresh-dependencies
+
 ## 명령어
 
 ### 자바 버전 변경 
@@ -33,9 +36,12 @@ sdk install springboot
 3. export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64(원하는 버전)
 
 ```
+### Spring Boot 
+1. [application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-data-migration)
 
 
 ### Spring Anotation
+0. [Spring 동작 방식](http://server-engineer.tistory.com/253)
 1. @GetMapping
 	Post, Put, Delete, Patch 와 같이 메서드 위에 쓰인다. 
 2. @RequestMappring
@@ -47,6 +53,36 @@ sdk install springboot
 	의존성 주입이란 클래스 내부에서 객체를 할당하는게 아닌 외부에서 받는것
 5. @Component
 	Class 에서 빈을 직접 등록하기 위함 @ComponentScan 애노테이션으로 @Component 애노테이션을 스캔 하여 빈으로 등록해 줄 수 있음 
+6. @RestControllerAdvice
+
+  @ControllerAdvice 간단하게 말하자면 @ExceptionHandler, @ModelAttribute, @InitBinder 가 적용된 메서드들을 AOP를 적용해 컨트롤러 단에 적용하기 위해 고안된 애너테이션 입니다.
+  @ResponseBody + @ControllerAdvice => @RestControllerAdvice 
+7. @Controller
+  View를 반환하기 위해 주로 사용 됨 Request가 들어오면 Dispatcher Servlet 이 Handler Mapping 에게 메시지를 주고 Controller 는 View 를 반환 여기서 ViewResolver가 사용되며 ViewResolver 설정에 맞게 View를 찾아 렌더링 한다. 
+8. @Transactional
+  Transaction을 도와주는 Anotation 만약 없다면 아래 코드 처럼 영속성 컨텍스트를 선언해서 수동으로 커밋 등을 해줘야 한다. 엔티티메니져 세션을 유지하기 위해서도 붙혀주는듯 하다. getOne 의 경우 Transactional을 안붙혀 주면 LazyInitializationExcetion 발생 한다. 
+  ```
+  import java.sql.*; import javax.sql.*; // ... DataSource ds = obtainDataSource(); Connection conn = ds.getConnection(); conn.setAutoCommit(false); // ... pstmt = conn.prepareStatement("UPDATE MOVIES ..."); pstmt.setString(1, "The Great Escape"); pstmt.executeUpdate(); // ... conn.commit(); // ...
+
+  ```
+  transaction 과정 
+  Active --성공--> Partially Committed --commit-->Committed
+         |                   |
+         |                  중단
+         |                   |
+         |                   |
+         |                   V
+         --오류---------> Failed ---------Rollback->Aborted     
+  
+  Transaction 특징 
+  원자성(트랜잭션이 일부만 반영되어서는 안됨), 
+  일관성(작업 처리 결과는 항상 일관성이 있어야 한다.), 
+  독립성(둘 이상의 트랜젝션이 동시에 병행 실행 되고 있을 때 어떤 트랜젝션도 연산에 끼어들 수 없다.), 영속성 (성공하면 결과는 영구적으로 반영 되어야 한다.)
+9. @Repository
+  퍼시스턴스 레이어, DB나 파일같은 외부 I/O 작업을 처리함
+10. @PostConstruct 
+  의존성 주입이 이루어진 후 초기화를 수행하는 매서드 리소스에서 호출 하지 않아도 초기화를 한다. 
+  사용예 - App Init 코드 
 
 
 ### Spring Legacy
@@ -101,8 +137,12 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 1. 스프링 프로파일 설정 resource 및에 application.yml
 2. docker 파일 설정 
 1. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
+1. ./gradlew build
+1. docker-compose build
+1. docker-compose up -d
 2. docker build -t product-service . 
 3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
 
-
-
+### 명령어 
+1. docker ps --format {{.Names}}
+1. docker-compose exec mongodb mongo product-db --quiet --eval "db.products.find()"
