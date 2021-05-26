@@ -146,3 +146,6 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 ### 명령어 
 1. docker ps --format {{.Names}}
 1. docker-compose exec mongodb mongo product-db --quiet --eval "db.products.find()"
+
+### 용어 
+1. annotationProcessor 자동으로 생성되는 코드를 Build 시 성능면에서(Compiler가 코드 전체를 다 봐야 함으로 ) 불리한데 이를 개선해 주는것 
