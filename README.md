@@ -83,6 +83,10 @@ sdk install springboot
 10. @PostConstruct 
   의존성 주입이 이루어진 후 초기화를 수행하는 매서드 리소스에서 호출 하지 않아도 초기화를 한다. 
   사용예 - App Init 코드 
+11. @Builder
+  lombok, VO.builder().id('ff')...name('df').build(); toBuild = true 로 하게 되면 새로운 객체를 생성 
+  
+
 
 
 ### Spring Legacy
