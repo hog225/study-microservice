@@ -1,0 +1,10 @@
+
+server:
+  port: 7001
+  address: 0.0.0.0
+
+logging:
+  level:
+    root: INFO
+    se.yg.microservices: DEBUG
+

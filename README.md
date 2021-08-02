@@ -1,6 +1,20 @@
 # microserviceStudy
 microservice study
 
+## RUN
+java -jar microservices/product-composite-service/build/libs/*.jar &
+
+1.del
+rmdir /s /Q api\build
+rmdir /s /Q util\build
+rmdir /s /Q microservices\product-composite-service\build
+rmdir /s /Q microservices\product-service\build
+rmdir /s /Q microservices\recommendation-service\build
+rmdir /s /Q microservices\review-service\build
+
+## Request
+curl http://mylocalhost:7000/product-composite/1 -s | jq
+
 ## 환경 
 Ubuntu 20.04.2
 
