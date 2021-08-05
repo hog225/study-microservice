@@ -1,6 +1,13 @@
 # microserviceStudy
 microservice study
 
+Hands-On Microservices with spring boot and spring cloud
+
+## 구조
+microservices - 통합 서비스 포함 핵심 서비스 
+api - 핵심 서비스에 접근하기 위한 Rest API 
+util - 예외 처리 
+
 ## RUN
 java -jar microservices/product-composite-service/build/libs/*.jar &
 
@@ -13,7 +20,8 @@ rmdir /s /Q microservices\recommendation-service\build
 rmdir /s /Q microservices\review-service\build
 
 ## Request
-curl http://mylocalhost:7000/product-composite/1 -s | jq
+curl http://yglocalhost:7000/product-composite/1 -s | jq .
+http://localhost:7000/swagger-ui.htm
 
 ## 환경 
 Ubuntu 20.04.2
@@ -156,15 +164,18 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 1. 스프링 프로파일 설정 resource 및에 application.yml
 2. docker 파일 설정 
 1. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
-1. ./gradlew build
+1. ./gradlew build ,  gradle.bat build -x test
 1. docker-compose build
 1. docker-compose up -d
 2. docker build -t product-service . 
 3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
+4. docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name my-prd-srv product-service
+5.  docker logs my-prd-srv -f
 
 ### 명령어 
 1. docker ps --format {{.Names}}
 1. docker-compose exec mongodb mongo product-db --quiet --eval "db.products.find()"
 
-
- 
+## trouble shoot
+1. Swagger 는 implementation 'org.springframework.boot:spring-boot-starter-web' 이 있어야 UI 가 열렸다. 
+2. Swagger 3.0 은 이소스로 동작하지 않음 

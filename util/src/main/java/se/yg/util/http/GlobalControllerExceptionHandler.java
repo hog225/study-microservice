@@ -11,13 +11,13 @@ import se.yg.util.exceptions.NotFoundException;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-@RestControllerAdvice
+@RestControllerAdvice // @ExceptionHandler, @ModelAttribute, @InitBinder 가 적용된 메서드들을 AOP를 적용해 컨트롤러 단에 적용하기 위해 고안된 애너테이션 입니다.
 class GlobalControllerExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     @ResponseStatus(NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class) // Not Found Exception 이 발생하면 아래 Error가 동작
     public @ResponseBody
     HttpErrorInfo handleNotFoundExceptions(ServerHttpRequest request, Exception ex) {
 

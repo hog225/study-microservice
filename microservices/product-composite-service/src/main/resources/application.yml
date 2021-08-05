@@ -1,3 +1,4 @@
+spring.profiles.active: swg
 server.port: 7000
 server.error.include-message: always
 
@@ -16,3 +17,19 @@ logging:
   level:
     root: INFO
     se.yg: DEBUG
+
+---
+spring.profiles: docker
+
+server.port: 8080
+
+app:
+  product-service:
+    host: product
+    port: 8080
+  recommendation-service:
+    host: recommendation
+    port: 8080
+  review-service:
+    host: review
+    port: 8080

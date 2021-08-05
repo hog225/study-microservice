@@ -8,3 +8,7 @@ logging:
     root: INFO
     se.yg.microservices: DEBUG
 
+---
+spring.profiles: docker
+server:
+  port: 8080

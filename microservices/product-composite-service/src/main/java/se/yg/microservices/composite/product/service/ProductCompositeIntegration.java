@@ -53,7 +53,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             @Value("${app.review-service.port}") int    reviewServicePort
     ) {
 
-        this.restTemplate = restTemplate;
+        this.restTemplate = restTemplate; // main 에서 Bean 으로 등록 되어 있음
         this.mapper = mapper;
 
         productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product/";
