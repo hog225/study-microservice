@@ -7,6 +7,9 @@ Hands-On Microservices with spring boot and spring cloud
 microservices - 통합 서비스 포함 핵심 서비스 
 api - 핵심 서비스에 접근하기 위한 Rest API 
 util - 예외 처리 
+product - MongoDB
+Recommendation - MongoDB
+Review - SQL
 
 ## RUN
 java -jar microservices/product-composite-service/build/libs/*.jar &
@@ -179,3 +182,5 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 ## trouble shoot
 1. Swagger 는 implementation 'org.springframework.boot:spring-boot-starter-web' 이 있어야 UI 가 열렸다. 
 2. Swagger 3.0 은 이소스로 동작하지 않음 
+3. mongoDB 쓸때 Entity @Id의 변수 이름은 반드시 id 여야한다. Id 이렇게 하면 findById 할때 조회가 안된다. ..
+4. mongoDB auto-index-creation: true 가 app.yml 에 있어야 unique = true 가 먹는다. 

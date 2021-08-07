@@ -1,12 +1,17 @@
 package se.yg.api.core.recommendation;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Recommendation {
-    private final int productId;
-    private final int recommendationId;
-    private final String author;
-    private final int rate;
-    private final String content;
-    private final String serviceAddress;
+    private int productId;
+    private int recommendationId;
+    private String author;
+    private int rate;
+    private String content;
+    private String serviceAddress;
 
     public Recommendation() {
         productId = 0;
@@ -26,27 +31,4 @@ public class Recommendation {
         this.serviceAddress = serviceAddress;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
-    public int getRecommendationId() {
-        return recommendationId;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public int getRate() {
-        return rate;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getServiceAddress() {
-        return serviceAddress;
-    }
 }

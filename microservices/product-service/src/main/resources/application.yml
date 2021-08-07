@@ -3,10 +3,17 @@ server:
   port: 7001
   address: 0.0.0.0
 
+spring.data.mongodb:
+  host: localhost
+  port: 27017
+  database: product-db
+  auto-index-creation: true
+
 logging:
   level:
     root: INFO
     se.yg.microservices: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
 ---
 spring.profiles: docker
