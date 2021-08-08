@@ -6,7 +6,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import se.yg.api.core.review.Review;
 import se.yg.api.core.review.ReviewService;
-import se.yg.microservices.core.review.dto.ReviewMapper;
 import se.yg.microservices.core.review.model.ReviewEntity;
 import se.yg.microservices.core.review.repositories.ReviewRepository;
 import se.yg.util.exceptions.InvalidInputException;

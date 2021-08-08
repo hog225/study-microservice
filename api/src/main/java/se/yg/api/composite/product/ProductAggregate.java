@@ -1,7 +1,11 @@
 package se.yg.api.composite.product;
 
+import lombok.Getter;
+
 import java.util.List;
 
+// 통합 DTO 같은 느낌
+@Getter
 public class ProductAggregate {
     private final int productId;
     private final String name;
@@ -9,6 +13,15 @@ public class ProductAggregate {
     private final List<RecommendationSummary> recommendations;
     private final List<ReviewSummary> reviews;
     private final ServiceAddresses serviceAddresses;
+
+    public ProductAggregate() {
+        productId = 0;
+        name = null;
+        weight = 0;
+        recommendations = null;
+        reviews = null;
+        serviceAddresses = null;
+    }
 
     public ProductAggregate(
         int productId,
@@ -26,27 +39,27 @@ public class ProductAggregate {
         this.serviceAddresses = serviceAddresses;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public List<RecommendationSummary> getRecommendations() {
-        return recommendations;
-    }
-
-    public List<ReviewSummary> getReviews() {
-        return reviews;
-    }
-
-    public ServiceAddresses getServiceAddresses() {
-        return serviceAddresses;
-    }
+//    public int getProductId() {
+//        return productId;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public int getWeight() {
+//        return weight;
+//    }
+//
+//    public List<RecommendationSummary> getRecommendations() {
+//        return recommendations;
+//    }
+//
+//    public List<ReviewSummary> getReviews() {
+//        return reviews;
+//    }
+//
+//    public ServiceAddresses getServiceAddresses() {
+//        return serviceAddresses;
+//    }
 }

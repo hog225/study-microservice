@@ -16,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 import static java.util.Collections.emptyList;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 
 @Configuration
@@ -49,6 +49,8 @@ public class ProductCompositeConfig {
                 .paths(PathSelectors.any())
                 .build()
                 .globalResponseMessage(GET, emptyList())
+                .globalResponseMessage(POST, emptyList())
+                .globalResponseMessage(DELETE, emptyList())
                 .apiInfo(new ApiInfo(
                         apiTitle,
                         apiDescription,

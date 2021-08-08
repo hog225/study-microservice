@@ -6,7 +6,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
 import se.yg.api.core.recommendation.Recommendation;
 import se.yg.api.core.recommendation.RecommendationService;
-import se.yg.microservices.core.recommendation.dto.RecommendationMapper;
 import se.yg.microservices.core.recommendation.model.RecommendationEntity;
 import se.yg.microservices.core.recommendation.repositories.RecommendationRepository;
 import se.yg.util.exceptions.InvalidInputException;

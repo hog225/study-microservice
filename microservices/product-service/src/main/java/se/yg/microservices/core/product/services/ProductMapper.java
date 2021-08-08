@@ -1,4 +1,4 @@
-package se.yg.microservices.core.product.dto;
+package se.yg.microservices.core.product.services;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

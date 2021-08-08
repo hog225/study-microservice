@@ -184,3 +184,4 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 2. Swagger 3.0 은 이소스로 동작하지 않음 
 3. mongoDB 쓸때 Entity @Id의 변수 이름은 반드시 id 여야한다. Id 이렇게 하면 findById 할때 조회가 안된다. ..
 4. mongoDB auto-index-creation: true 가 app.yml 에 있어야 unique = true 가 먹는다. 
+5. Lombok 과 MapStruct 같이 사용할때는 build.gradle 에서 선언 순서에 주의 하거나 lombok-mapstruct-binding 를 사용 한다. 

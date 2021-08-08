@@ -1,13 +1,13 @@
 package se.yg.microservices.core.product.services;
 
-import com.mongodb.DuplicateKeyException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
 import se.yg.api.core.product.Product;
 import se.yg.api.core.product.ProductService;
-import se.yg.microservices.core.product.dto.ProductMapper;
 import se.yg.microservices.core.product.model.ProductEntity;
 import se.yg.microservices.core.product.repositories.ProductRepository;
 import se.yg.util.exceptions.InvalidInputException;
