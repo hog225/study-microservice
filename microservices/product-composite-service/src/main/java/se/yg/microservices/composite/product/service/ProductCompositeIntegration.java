@@ -56,9 +56,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         this.restTemplate = restTemplate; // main 에서 Bean 으로 등록 되어 있음
         this.mapper = mapper;
 
-        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product/";
-        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
-        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
+        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product";
+        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation";
+        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review";
     }
 
     @Override

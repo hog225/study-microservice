@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static reactor.core.publisher.Mono.just;
 
@@ -134,34 +134,51 @@ class ProductCompositeServiceApplicationTests {
 
 	}
 
+//	@Test
+//	public void getProductNotFound(){
+//		client.get()
+//			.uri("/product-composite/" + PRODUCT_ID_NOT_FOUND)
+//			.accept(APPLICATION_JSON)
+//			.exchange() // 위의 요청을 수행 그리고 응답을 검증하기 위해 이후 체이닝으로 검사
+//			.expectStatus().isNotFound()
+//			.expectHeader().contentType(APPLICATION_JSON)
+//			.expectBody()
+//			.jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_NOT_FOUND)
+//			.jsonPath("$.message").isEqualTo("NOT FOUND: " + PRODUCT_ID_NOT_FOUND)
+//			.consumeWith(result -> {
+//				System.out.println("============Req/Rsp============");
+//				System.out.println(result.toString());
+//				System.out.println("================================");
+//			});
+//	}
+//
+//	@Test
+//	public void getProductInvalidInput() {
+//
+//		client.get()
+//				.uri("/product-composite/" + PRODUCT_ID_INVALID)
+//				.accept(APPLICATION_JSON)
+//				.exchange()
+//				.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
+//				.expectHeader().contentType(APPLICATION_JSON)
+//				.expectBody()
+//				.jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_INVALID)
+//				.jsonPath("$.message").isEqualTo("INVALID: " + PRODUCT_ID_INVALID);
+//	}
+
+	// TODO  왜 안되는 지 모르겠음
 	@Test
-	public void getProductNotFound(){
-		client.get()
-			.uri("/product-composite/" + PRODUCT_ID_NOT_FOUND)
-			.accept(APPLICATION_JSON)
-			.exchange() // 위의 요청을 수행 그리고 응답을 검증하기 위해 이후 체이닝으로 검사
-			.expectStatus().isNotFound()
-			.expectHeader().contentType(APPLICATION_JSON)
-			.expectBody()
-			.jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_NOT_FOUND)
-			.jsonPath("$.message").isEqualTo("NOT FOUND: " + PRODUCT_ID_NOT_FOUND)
-			.consumeWith(result -> {
-				System.out.println("============Req/Rsp============");
-				System.out.println(result.toString());
-				System.out.println("================================");
-			});
+	public void getProductNotFound() {
+
+		getAndVerifyProduct(PRODUCT_ID_NOT_FOUND, NOT_FOUND)
+				.jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_NOT_FOUND)
+				.jsonPath("$.message").isEqualTo("NOT FOUND: " + PRODUCT_ID_NOT_FOUND);
 	}
 
 	@Test
 	public void getProductInvalidInput() {
 
-		client.get()
-				.uri("/product-composite/" + PRODUCT_ID_INVALID)
-				.accept(APPLICATION_JSON)
-				.exchange()
-				.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY)
-				.expectHeader().contentType(APPLICATION_JSON)
-				.expectBody()
+		getAndVerifyProduct(PRODUCT_ID_INVALID, UNPROCESSABLE_ENTITY)
 				.jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_INVALID)
 				.jsonPath("$.message").isEqualTo("INVALID: " + PRODUCT_ID_INVALID);
 	}

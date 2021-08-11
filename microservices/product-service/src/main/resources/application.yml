@@ -13,14 +13,18 @@ logging:
   level:
     root: INFO
     se.yg.microservices: DEBUG
+    se.yg.util: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
 ---
-spring.profiles: docker
-server:
-  port: 8080
-
 spring:
+  config:
+    activate:
+      on-profile: docker
   data:
     mongodb:
       host: mongodb
+
+server:
+  port: 8080
+
