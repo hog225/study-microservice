@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @Api("REST API for composite product information")
 public interface ProductCompositeService {
@@ -28,6 +29,7 @@ public interface ProductCompositeService {
     @PostMapping(
             value    = "/product-composite",
             consumes = "application/json")
+    //비동기 생성 이벤트를 토픽 (Prodcut, Recommendations, Reviews) 에 개시 후 호출자에게 바로 OK 를 준다.
     void createCompositeProduct(@RequestBody ProductAggregate body);
 
     /**
@@ -47,7 +49,8 @@ public interface ProductCompositeService {
     @GetMapping(
             value    = "/product-composite/{productId}",
             produces = "application/json")
-    ProductAggregate getCompositeProduct(@PathVariable int productId);
+    //동기 API
+    Mono<ProductAggregate> getCompositeProduct(@PathVariable int productId);
 
 
     /**
@@ -65,5 +68,6 @@ public interface ProductCompositeService {
             @ApiResponse(code = 422, message = "Unprocessable entity, input parameters caused the processing to fail. See response message for more information.")
     })
     @DeleteMapping(value = "/product-composite/{productId}")
+    //비동기 삭제 이벤트를 토픽 (Prodcut, Recommendations, Reviews) 에 개시 후 호출자에게 바로 OK 를 준다.
     void deleteCompositeProduct(@PathVariable int productId);
 }

@@ -1,6 +1,7 @@
 package se.yg.api.core.review;
 
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -31,7 +32,8 @@ public interface ReviewService {
     @GetMapping(
             value    = "/review",
             produces = "application/json")
-    List<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
+    //논블로킹 동기 API
+    Flux<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
 
     /**
      * Sample usage:

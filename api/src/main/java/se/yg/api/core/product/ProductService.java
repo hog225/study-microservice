@@ -30,6 +30,7 @@ public interface ProductService {
         value    = "/product/{productId}",
         produces = "application/json")
      //Product getProduct(@PathVariable int productId);
+    //논블로킹 동기 API
     Mono<Product> getProduct(@PathVariable int productId);
 
     /**

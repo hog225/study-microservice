@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import se.yg.api.composite.product.ProductAggregate;
 import se.yg.api.composite.product.RecommendationSummary;
 import se.yg.api.composite.product.ReviewSummary;
@@ -48,29 +50,44 @@ class ProductCompositeServiceApplicationTests {
 	@MockBean
 	private ProductCompositeIntegration compositeIntegration;
 
+//	@BeforeEach
+//	public void setUp() {
+//
+//
+//		when(compositeIntegration.getProduct(PRODUCT_ID_OK)).
+//				thenReturn(new Product(PRODUCT_ID_OK, "name", 1, "mock-address"));
+//		when(compositeIntegration.getRecommendations(PRODUCT_ID_OK)).
+//				thenReturn(singletonList(new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock-address")));
+//		when(compositeIntegration.getReviews(PRODUCT_ID_OK)).
+//				thenReturn(singletonList(new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock-address")));
+//		when(compositeIntegration.getProduct(PRODUCT_ID_NOT_FOUND)).thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
+//		when(compositeIntegration.getProduct(PRODUCT_ID_INVALID)).thenThrow(new InvalidInputException("INVALID: " + PRODUCT_ID_INVALID));
+//
+//		// TODO 왜지 ? Create 의 경우 아래 MockBean의 아래 리턴을 선언해 주지 않아도 정상 동작함 ..
+////		when(compositeIntegration.createProduct(new Product())).
+////				thenReturn(new Product());
+////		when(compositeIntegration.createRecommendation(new Recommendation())).
+////				thenReturn(new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock-address"));
+////		when(compositeIntegration.createReview(new Review())).
+////				thenReturn(new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock-address"));
+//
+//	}
 	@BeforeEach
 	public void setUp() {
 
-
 		when(compositeIntegration.getProduct(PRODUCT_ID_OK)).
-				thenReturn(new Product(PRODUCT_ID_OK, "name", 1, "mock-address"));
+				thenReturn(Mono.just(new Product(PRODUCT_ID_OK, "name", 1, "mock-address")));
+
 		when(compositeIntegration.getRecommendations(PRODUCT_ID_OK)).
-				thenReturn(singletonList(new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock-address")));
+				thenReturn(Flux.fromIterable(singletonList(new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock address"))));
+
 		when(compositeIntegration.getReviews(PRODUCT_ID_OK)).
-				thenReturn(singletonList(new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock-address")));
+				thenReturn(Flux.fromIterable(singletonList(new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock address"))));
+
 		when(compositeIntegration.getProduct(PRODUCT_ID_NOT_FOUND)).thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
+
 		when(compositeIntegration.getProduct(PRODUCT_ID_INVALID)).thenThrow(new InvalidInputException("INVALID: " + PRODUCT_ID_INVALID));
-
-		// TODO 왜지 ? Create 의 경우 아래 MockBean의 아래 리턴을 선언해 주지 않아도 정상 동작함 ..
-//		when(compositeIntegration.createProduct(new Product())).
-//				thenReturn(new Product());
-//		when(compositeIntegration.createRecommendation(new Recommendation())).
-//				thenReturn(new Recommendation(PRODUCT_ID_OK, 1, "author", 1, "content", "mock-address"));
-//		when(compositeIntegration.createReview(new Review())).
-//				thenReturn(new Review(PRODUCT_ID_OK, 1, "author", "subject", "content", "mock-address"));
-
 	}
-
 	@Test
 	public void createCompositeProduct1() {
 

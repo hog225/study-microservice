@@ -4,6 +4,7 @@ package se.yg.microservices.composite.product.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import se.yg.api.composite.product.*;
 import se.yg.api.core.product.Product;
 import se.yg.api.core.recommendation.Recommendation;
@@ -57,19 +58,35 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
             throw re;
         }
     }
+//    @Override
+//    public ProductAggregate getCompositeProduct(int productId) {
+//        log.debug("getCompositeProduct: lookup a product aggregate for productId: {}", productId);
+//
+//        Product product = integration.getProduct(productId);
+//        if (product == null) throw new NotFoundException("No product found for productId: " + productId);
+//
+//        List<Recommendation> recommendations = integration.getRecommendations(productId);
+//        List<Review> reviews = integration.getReviews(productId);
+//
+//        log.debug("getCompositeProduct: aggregate entity found for productId: {}", productId);
+//
+//        return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
+//    }
+
     @Override
-    public ProductAggregate getCompositeProduct(int productId) {
-        log.debug("getCompositeProduct: lookup a product aggregate for productId: {}", productId);
+    public Mono<ProductAggregate> getCompositeProduct(int productId){
+        //논블로킹
+        Mono<ProductAggregate> result =  Mono.zip(values ->
+                createProductAggregate((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress())
+                // zip 메서드는 아래 세개를 병렬로 호출한다.
+                ,integration.getProduct(productId)
+                ,integration.getRecommendations(productId).collectList()
+                ,integration.getReviews(productId).collectList()
+        ).doOnError(ex -> log.warn("getCompositeProduct: aggregate entity found for productId: {}", ex.toString()))
+                .log();
 
-        Product product = integration.getProduct(productId);
-        if (product == null) throw new NotFoundException("No product found for productId: " + productId);
-
-        List<Recommendation> recommendations = integration.getRecommendations(productId);
-        List<Review> reviews = integration.getReviews(productId);
-
-        log.debug("getCompositeProduct: aggregate entity found for productId: {}", productId);
-
-        return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
+        log.info("getCompositeProduct Called ~!!!!!!!!!!!");
+        return result;
     }
 
     @Override

@@ -10,6 +10,6 @@ import se.yg.microservices.core.product.model.ProductEntity;
 
 import java.util.Optional;
 
-public interface ProductRepository extends ReactiveCrudRepository<ProductEntity, String> {
+public interface ProductRepository extends ReactiveMongoRepository<ProductEntity, String> {
     Mono<ProductEntity> findByProductId(int productId); // 0개 혹은 1개
 }

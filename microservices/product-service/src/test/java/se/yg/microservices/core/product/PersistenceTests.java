@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import se.yg.microservices.core.product.model.ProductEntity;
 import se.yg.microservices.core.product.repositories.ProductRepository;
+import se.yg.util.exceptions.NotFoundException;
 
 
 import java.util.List;
@@ -122,11 +123,26 @@ public class PersistenceTests {
     public void getByProductId() {
         //Optional<ProductEntity> entity = repository.findByProductId(savedEntity.getProductId());
         Mono<ProductEntity> entity = repository.findByProductId(savedEntity.getProductId());
-        assertNotNull(entity.block());
+        assertNotNull(entity.log().block());
         assertEqualsProduct(savedEntity, entity.block());
     }
 
-//    @Test
+    @Test
+    public void getByProductIdNotFound() {
+        //Optional<ProductEntity> entity = repository.findByProductId(savedEntity.getProductId());
+        Mono<ProductEntity> entity = repository.findByProductId(34);
+
+
+        entity.log().map(val -> val.getProductId() / 0).doOnError(ex -> System.out.println("fefefefefe")).block();
+
+
+
+        //assertNull(entity.log().block());
+
+    }
+
+
+    //    @Test
 //    public void delete() {
 //        repository.delete(savedEntity);
 //        assertFalse(repository.existsById(savedEntity.getId()).block());
@@ -145,7 +161,7 @@ public class PersistenceTests {
     public void duplicateError(){
         assertThrows(DuplicateKeyException.class, ()->{
             ProductEntity entity = new ProductEntity(savedEntity.getProductId(), "n", 1);
-            repository.save(entity);
+            repository.save(entity).block();
         });
 //        ProductEntity entity = new ProductEntity(savedEntity.getProductId(), "n", 1);
 //        repository.save(entity);
