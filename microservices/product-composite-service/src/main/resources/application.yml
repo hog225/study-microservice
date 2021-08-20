@@ -13,6 +13,37 @@ app:
     host: localhost
     port: 7003
 
+spring.cloud.stream:
+  defaultBinder: rabbit
+  default.contentType: application/json
+  # 출력 채널과 토픽이름을 매핑
+  bindings:
+    output-products:
+      destination: products
+      producer:
+        required-groups: auditGroup
+    output-recommendations:
+      destination: recommendations
+      producer:
+        required-groups: auditGroup
+    output-reviews:
+      destination: reviews
+      producer:
+        required-groups: auditGroup
+
+# kafka - 메시지 큐
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092
+
+# rabbitmq - 메시지 큐
+spring.rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
+
+
 logging:
   level:
     root: INFO
@@ -23,6 +54,10 @@ spring:
     group:
       "docker": "docker, swg"
     active: swg
+
+# Actuator
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
 
 ---
 spring:
@@ -43,3 +78,5 @@ app:
     host: review
     port: 8080
 
+spring.rabbitmq.host: rabbitmq
+spring.cloud.stream.kafka.binder.brokers: kafka

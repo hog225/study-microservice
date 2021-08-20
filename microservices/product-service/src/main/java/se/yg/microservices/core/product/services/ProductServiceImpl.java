@@ -62,18 +62,34 @@ public class ProductServiceImpl implements ProductService {
                 });
     }
 
+    //Blocking
+//    @Override
+//    public Product createProduct(Product body) {
+//        try {
+//            ProductEntity entity = mapper.apiToEntity(body);
+//            ProductEntity newEntity = repository.save(entity);
+//
+//            LOG.debug("createProduct: entity created for productId: {}", body.getProductId());
+//            return mapper.entityToApi(newEntity);
+//
+//        } catch (DuplicateKeyException dke) {
+//            throw new InvalidInputException("Duplicate key, Product ID : " + body.getProductId());
+//        }
+//    }
+
     @Override
     public Product createProduct(Product body){
 
-            ProductEntity entity = mapper.apiToEntity(body);
-            Mono<Product> newEntity = repository.save(entity)
-                    .log()
-                    .onErrorMap(
-                            DuplicateKeyException.class,
-                            ex -> new InvalidInputException("Duplicated key, Product ID : " + body.getProductId())
-                    ).map(e -> mapper.entityToApi(e));
+        if (body.getProductId() < 1) throw new InvalidInputException("Invalid product id: " + body.getProductId());
+        ProductEntity entity = mapper.apiToEntity(body);
+        Mono<Product> newEntity = repository.save(entity)
+                .log()
+                .onErrorMap(
+                        DuplicateKeyException.class,
+                        ex -> new InvalidInputException("Duplicated key, Product ID : " + body.getProductId())
+                ).map(e -> mapper.entityToApi(e));
 
-            //return mapper.entityToApi(newEntity);
+        //return mapper.entityToApi(newEntity);
         return newEntity.block();
     }
 

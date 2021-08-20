@@ -9,12 +9,56 @@ spring.data.mongodb:
   database: product-db
   auto-index-creation: true
 
+
+spring.cloud.stream:
+  defaultBinder: rabbit
+  default.contentType: application/json
+  bindings.input:
+    destination: products
+    # group 으로 설정하게 되면 두개의 인스턴스가 생성되더라도 서로 다른 메시지를 순차적으로 받을 수 있다.
+    group: productsGroup
+
+spring.cloud.stream.bindings.input.consumer:
+  #데드레터 대기열로 메시지를 옮기기전 재시도 횟수
+  maxAttempts: 3
+  # 첫번째 재시도 500MS 이후
+  backOffInitialInterval: 500
+  # 다른 두번째 재시도 1000ms 이후
+  backOffMaxInterval: 1000
+  # retry Term
+  # 2 retry 1000ms + 500ms * 2.0
+  # 3 retry 1000ms + (2 retry time(1000ms + 500ms * 2.0))*2.0
+  backOffMultiplier: 2.0
+
+spring.cloud.stream.rabbit.bindings.input.consumer:
+  # dead letter queue
+  autoBindDlq: true
+  # DLQ 로 보내도록 함
+  republishToDlq: true
+
+spring.cloud.stream.kafka.bindings.input.consumer:
+  enableDlq: true
+
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092
+
+spring.rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
+
 logging:
   level:
     root: INFO
     se.yg.microservices: DEBUG
     se.yg.util: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+# Actuator
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
 
 ---
 spring:

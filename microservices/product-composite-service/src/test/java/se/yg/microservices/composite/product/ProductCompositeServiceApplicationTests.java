@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -46,6 +47,8 @@ class ProductCompositeServiceApplicationTests {
 
 	@Autowired
 	private WebTestClient client;
+
+
 
 	@MockBean
 	private ProductCompositeIntegration compositeIntegration;

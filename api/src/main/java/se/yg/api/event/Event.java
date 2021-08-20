@@ -3,9 +3,9 @@ package se.yg.api.event;
 
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-import static java.time.LocalDateTime.now;
+
 
 @Getter
 public class Event<K, T> {
@@ -14,7 +14,7 @@ public class Event<K, T> {
     private Event.Type eventType;
     private K key;
     private T data;
-    private LocalDateTime eventCreatedAt;
+    private Date eventCreatedAt;
 
     public Event(){
         this.eventType = null;
@@ -27,6 +27,6 @@ public class Event<K, T> {
         this.eventType = eventType;
         this.key = key;
         this.data = data;
-        this.eventCreatedAt = now();
+        this.eventCreatedAt = new Date();
     }
 }

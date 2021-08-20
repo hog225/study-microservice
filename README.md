@@ -183,7 +183,7 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 5. .\gradlew.bat build -x test && docker-compose build && docker-compose up
 
 ### 명령어 
-1. docker ps --format {{.Names}}
+1. docker ps --format "{{.Image}}", docker ps --format "{{.Image}} : {{.ID}}"
 1. docker-compose exec mongodb mongo product-db --quiet --eval "db.products.find()"
 1. docker exec -it microservicestudy_mysql_1 bash -l //bash 로 들어가기 
 
