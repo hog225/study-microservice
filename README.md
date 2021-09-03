@@ -171,18 +171,20 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 공개 API 문서화, 스웨거 기반의 문서를 런타임에 생성하는 스프링 폭스를 사용 swagger $HOST:$PORT/swagger-ui/index.html
 
 ## Docker
-### Build and start
 1. 스프링 프로파일 설정 resource 및에 application.yml
 2. docker 파일 설정 
 1. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
 1. ./gradlew build ,  gradle.bat build -x test
 1. docker-compose build
 1. docker-compose up -d
+   
+
 2. docker build -t product-service . 
 3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
 4. docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name my-prd-srv product-service
 5. docker logs my-prd-srv -f
 5. .\gradlew.bat build -x test && docker-compose build && docker-compose up
+6. docker-compose -f [docker-compose.yml] up 
 
 ### 명령어 
 1. docker ps --format "{{.Image}}", docker ps --format "{{.Image}} : {{.ID}}"
