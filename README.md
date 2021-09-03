@@ -1,7 +1,7 @@
 # microserviceStudy
 microservice study
 
-Hands-On Microservices with spring boot and spring cloud
+Hands-On Microservices with spring boot and spring cloud...
 
 ## 구조
 microservices - 통합 서비스 포함 핵심 서비스 
