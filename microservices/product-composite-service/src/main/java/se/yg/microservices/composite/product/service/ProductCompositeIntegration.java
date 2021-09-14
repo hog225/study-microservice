@@ -64,39 +64,58 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         @Output(OUTPUT_REVIEWS)
         MessageChannel outputReviews();
     }
-    private final WebClient webClient;
+    private WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
 
-    private final String productServiceUrl;
-    private final String recommendationServiceUrl;
-    private final String reviewServiceUrl;
+//    private final String productServiceUrl;
+//    private final String recommendationServiceUrl;
+//    private final String reviewServiceUrl;
+
+    // Eureka Service application.yml spring.application.name
+    private final String productServiceUrl = "http://product";
+    private final String recommendationServiceUrl = "http://recommendation";
+    private final String reviewServiceUrl = "http://review";
+
+
+    // 생성자가 실행 되기 전에는 EurekaConfig 에서 WebClient.Builder 에 로드벨런스(RibbonLoadBalancer)가 주입되지 않는다.
+    // 생성자가 실행되고 EurekaConfig 에서 로드밸런서를 주입하는데 시간이 걸림으로 그냥 webClient 로 썻다가는 webClient 가 Null 일 수 있어서 ???
+    private WebClient getWebClient() {
+        if (webClient == null) {
+            webClient = webClientBuilder.build();
+        }
+        return webClient;
+    }
 
     @Autowired
     public ProductCompositeIntegration(
+            WebClient.Builder webClientBuilder,
             RestTemplate restTemplate,
-            WebClient.Builder webClient,
+            //WebClient.Builder webClient,
             MessageSources messageSources,
-            ObjectMapper mapper,
+            ObjectMapper mapper
+//              Eureka 서비스 이전
+//            @Value("${app.product-service.host}") String productServiceHost,
+//            @Value("${app.product-service.port}") int    productServicePort,
+//
+//            @Value("${app.recommendation-service.host}") String recommendationServiceHost,
+//            @Value("${app.recommendation-service.port}") int    recommendationServicePort,
+//
+//            @Value("${app.review-service.host}") String reviewServiceHost,
+//            @Value("${app.review-service.port}") int    reviewServicePort
 
-            @Value("${app.product-service.host}") String productServiceHost,
-            @Value("${app.product-service.port}") int    productServicePort,
-
-            @Value("${app.recommendation-service.host}") String recommendationServiceHost,
-            @Value("${app.recommendation-service.port}") int    recommendationServicePort,
-
-            @Value("${app.review-service.host}") String reviewServiceHost,
-            @Value("${app.review-service.port}") int    reviewServicePort
     ) {
 
         this.restTemplate = restTemplate; // main 에서 Bean 으로 등록 되어 있음
         this.mapper = mapper;
-        this.webClient = webClient.build();
+        //this.webClient = webClient.build();
+        this.webClientBuilder = webClientBuilder;
         this.messageSources = messageSources;
 
-        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort;
-        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort;
-        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort;
+//        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort;
+//        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort;
+//        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort;
     }
 
 //    @Override
@@ -148,7 +167,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         LOG.debug("Will call the getProduct API on URL: {}", url);
 
         //논블로킹
-        return webClient.get().uri(url).retrieve().bodyToMono(Product.class).log().onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
+        return getWebClient().get().uri(url).retrieve().bodyToMono(Product.class).log().onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
+        //return webClient.get().uri(url).retrieve().bodyToMono(Product.class).log().onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
     }
 
 
@@ -212,7 +232,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     @Override
     public Flux<Recommendation> getRecommendations(int productId){
         String url = recommendationServiceUrl + "/recommendation?productId=" + productId;
-        return webClient.get().uri(url).retrieve().bodyToFlux(Recommendation.class).log().onErrorResume(error->empty());
+        return getWebClient().get().uri(url).retrieve().bodyToFlux(Recommendation.class).log().onErrorResume(error->empty());
+        //return webClient.get().uri(url).retrieve().bodyToFlux(Recommendation.class).log().onErrorResume(error->empty());
 
     }
 
@@ -279,7 +300,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     public Flux<Review> getReviews(int productId){
         String url = reviewServiceUrl + "/review?productId=" + productId;
         LOG.debug("Will call the getReviews API on URL: {}", url);
-        return webClient.get().uri(url).retrieve().bodyToFlux(Review.class).onErrorResume(error->empty());
+        return getWebClient().get().uri(url).retrieve().bodyToFlux(Review.class).onErrorResume(error->empty());
+        //return webClient.get().uri(url).retrieve().bodyToFlux(Review.class).onErrorResume(error->empty());
     }
 
 //    @Override
@@ -316,10 +338,15 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     private Mono<Health> getHealth(String url){
         url += "/actuator/health";
         LOG.debug("Will call the Health API on URL : {}", url);
-        return webClient.get().uri(url).retrieve().bodyToMono(String.class)
+        return getWebClient().get().uri(url).retrieve().bodyToMono(String.class)
                 .map(s -> new Health.Builder().up().build())
                 .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
                 .log();
+
+//        return webClient.get().uri(url).retrieve().bodyToMono(String.class)
+//                .map(s -> new Health.Builder().up().build())
+//                .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
+//                .log();
     }
 
     // 블로킹

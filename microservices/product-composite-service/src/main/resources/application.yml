@@ -2,16 +2,17 @@
 server.port: 7000
 server.error.include-message: always
 
-app:
-  product-service:
-    host: localhost
-    port: 7001
-  recommendation-service:
-    host: localhost
-    port: 7002
-  review-service:
-    host: localhost
-    port: 7003
+# Eureka 와 같이 검색 서비스가 있다면 생략가능 하다.
+#app:
+#  product-service:
+#    host: localhost
+#    port: 7001
+#  recommendation-service:
+#    host: localhost
+#    port: 7002
+#  review-service:
+#    host: localhost
+#    port: 7003
 
 spring.cloud.stream:
   defaultBinder: rabbit
@@ -58,6 +59,22 @@ spring:
 # Actuator
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
+# 유레카 서비스가 각 마이크로 서비스를 식별하는 이름
+spring.application.name: product-composite
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
+ribbon.ServerListRefreshInterval: 5000
+
+ribbon.NFLoadBalancerPingInterval: 5
 
 ---
 spring:
@@ -67,16 +84,18 @@ spring:
 
 server.port: 8080
 
-app:
-  product-service:
-    host: product
-    port: 8080
-  recommendation-service:
-    host: recommendation
-    port: 8080
-  review-service:
-    host: review
-    port: 8080
+# Eureka 와 같이 검색 서비스가 있다면 생략가능 하다.
+#app:
+#  product-service:
+#    host: product
+#    port: 8080
+#  recommendation-service:
+#    host: recommendation
+#    port: 8080
+#  review-service:
+#    host: review
+#    port: 8080
 
 spring.rabbitmq.host: rabbitmq
 spring.cloud.stream.kafka.binder.brokers: kafka
+eureka.client.serviceUrl.defaultZone: http://eureka:8761/eureka/

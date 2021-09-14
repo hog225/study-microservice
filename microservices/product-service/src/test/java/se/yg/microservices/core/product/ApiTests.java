@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.*;
 import static reactor.core.publisher.Mono.just;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment=RANDOM_PORT, properties = {"spring.data.mongodb.port: 0"})
+@SpringBootTest(webEnvironment=RANDOM_PORT, properties = {"spring.data.mongodb.port: 0", "eureka.client.enabled=false"})
 public class ApiTests {
     @Autowired
     private WebTestClient client;

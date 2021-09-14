@@ -177,14 +177,14 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 1. ./gradlew build ,  gradle.bat build -x test
 1. docker-compose build
 1. docker-compose up -d
-   
-
 2. docker build -t product-service . 
 3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
 4. docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name my-prd-srv product-service
 5. docker logs my-prd-srv -f
 5. .\gradlew.bat build -x test && docker-compose build && docker-compose up
 6. docker-compose -f [docker-compose.yml] up 
+7. docker-compose up -d --scale review=2 // review 서비스를 두개로 스케일 업 한다. 
+8. 위 커맨트 안되면  docker-compose up -d --scale review=2 --remove-orphans
 
 ### 명령어 
 1. docker ps --format "{{.Image}}", docker ps --format "{{.Image}} : {{.ID}}"
@@ -219,6 +219,105 @@ https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.htm
     - 재시도 및 데드레터 대기열 
         - 네트워크 문제로 메시지 처리가 안될때 Retry 횟수 를 정하고 지정된 횟수동안 처리가 안되면 데드레터 큐로 이동시킨다. 보통 MQ 의 기능이다. 
     - 순서 보장 및 파티션 
-        - 비지니스 로직 메시지는 순서가 보장될 필요가 있는 것들이 있다. 이런 메시지 들에 Key를 부여하여 해당 키가 소비될 수 있는 서비스를 지정한다. Pub, Sub 둘다 설정이 필요 하다. 
+        - 비지니스 로직 메시지는 순서가 보장될 필요가 있는 것들이 있다. 이런 메시지 들에 Key를 부여하여 해당 키가 소비될 수 있는 서비스를 지정한다. Pub, Sub 둘다 설정이 필요 하다.
     
+
+## 서비스 검색 
+---
+- 살아있는 마이크로서비스르 검색하고 보여준다. 
+- 로드 밸런싱을 한다. 
+- 상태가 비정상인 마이크로 서비스를 감지한다. 
+- 마이크로 서비스를 자동으로 등록하거나 해지 한다. 
+- DNS 서버의 경우 리졸브된 IP 주소를 캐시하여 사용하기 때문에 IP 가 동작하는한 계속 사용한다. 로드에 대한 설정을 할 수 없다. 
+- 서비스 검색 서버는 아래 조건을 만족해야 한다. 
+    - 언제든지 인스턴스가 시작, 종료, 장애  상태가 될 수 있다. 
+    - 실패한 인스턴스는 복구 될 수 있다. 복구 되지 못한 인스턴스는 버려야 한다. 
+    - 언제든 네트워크 오류가 발생 할 수 있다. 
+
+- Spring Cloud 는 서비스 검색 서버의 검색 서비스와 통신하는 방법을 추상화한 DiscoveryClient 를 제공한다. 
+- Load Balancer 를 통해 검색 서비스에 등록된 인스턴스로 요청을 보내는 방법을 추상화 한 LoadBalanceClient 도 있다. 
+### Netflix Eureka
+시나리오 
+
+1. Review 서비스는 시작시 Eureka에 등록한다. 
+2. 정기적으로 Eureka에게 Hearbeat를 날린다. 
+3. Product-composite 서비스는 사용가능한 서비스 정보를 정기적으로 유레카에게 전달 
+4. Product-composite 서비스 내에서 사용가능한 인스턴스 목록에서 대상을 선택할 수 있다. (라운드 로빈으로)
+
+- Client 별로 Eureka Client 가 있어야 한다. 
+
+### Spring Cloud Load Balancer
+
+### kubernetes
+
+### Apache ZooKeeper
+
+### Hashicorp Consul
+
+## Edge Server
+---
+- 엣지 서버는 주요서비스를 외부에서 접근하지 못하도록 보호한다.
+
+![https://subscription.packtpub.com/book/web_development/9781789613476/10/ch10lvl1sec81/adding-an-edge-server-to-our-system-landscape](/img/edgeserver.png)
+
+
+### Spring Cloud Gateway
+- Zuul 의 대체제, API Gateway Server 이며 Edge 서버 역할을 한다.
+- URL 경로 기반 라우팅, OAuth 2.0, OIDC 에 기반한 엔드포인트 보호 기능 
+- 논 블로킹 API 사용, Zuul 은 블로킹 API
+
+### Spring Security Oauth
+
+## 구성중앙화 
+---
+- 마이크로 서비스 환경의 구성 정보를 중앙 집중식으로 관리한다. 
+- 구성을 로컬, 다른 서버 등에 저장 할 수 있다.
+- 스프링 클라우드 버스를 이용해 구성 변경사항을 실서버에 업데이트 할 수 있다. 
+- 구성 정보의 암호화도 진행 한다. 
+
+![https://subscription.packtpub.com/book/web_development/9781789613476/10/ch10lvl1sec81/adding-an-edge-server-to-our-system-landscape](/img/cloud-bus-config.png)
+
+### Spring Cloud Config Server 
+
+## 서킷 브레이커 
+---
+용어 정리 
+
+- 서킷브레이커: 원격서비스가 응답하지 않을때 연쇄 장애를 방지
+- rate limiter: 지정한 시간 동안의 서비스 요청 수를 제한하고자 사용 
+- bulkhead: 서비스에 대한 동시 요청 수 제한
+- 재시도: 임의적 오류를 처리할때 
+- timeout: 응답없는 서비스 처리 
+
+### Resilience4j
+- 기존엔 넷플릭스 히스트릭스(현제 Maintenance 모드) 였음 그러나 Resilience4j 로 변경을 권고
+
+  ![핸즈온 마이크로서비스](/img/resilience4j-s.png)
+ 
+- 동작 
+  1. Close 상태에서 시작해서 요청처리 요청이 성공적이면 회로의 닫힘 상태를 유지 해야겠지 
+  2. Threshold 가 넘어서는 실패가 발생시 카운터가 증가하고 5번이 되면 트립이라는 Action을 통해 서킷을 Open 한다. 
+  3. 설정한 시간이 지나면 반열림 상태로 전환되고 프로브 요청을 보내서 장애가 해결 되었는지 확인 
+  4. 프로브 요청이 실패 하면 다시 열림 상태가 됨 
+  5. 프로브 요청이 성공하면 닫힘 상태가 되어 새 요청을 처리 
+  
+
+
+## 분산추적
+---
+
+### Spring Seluth
+- 구글 Dapper 기반이다. 
+- Request 에 추적 ID(Trace ID) 같은 것을 붙혀서 복잡한 Request를 추적할 수 있도록 해준다. 
+- Span ID, Trace ID 의 개념이 있다. 
+  - Span ID: 작업단위의 ID 라고 생각하면 되는데 MicroService를 넘나들때마다 변경된다.
+  - Trace ID: 최초의 Request 와 마지막 Request 가 동일한 값을 같는다. 
+- 추적트리: 전체 워크플로의 추적 정보  
+- 네이버에는 Pinpoint 가 있다. 
+
+### Zipkin
+- 트워터에서 만듦
+- Seluth 의 추적 데이터를 수집 한다. 
+
+
 

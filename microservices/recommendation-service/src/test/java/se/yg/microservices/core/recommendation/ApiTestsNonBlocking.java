@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static se.yg.api.event.Event.Type.CREATE;
 import static se.yg.api.event.Event.Type.DELETE;
 
-@SpringBootTest(webEnvironment=RANDOM_PORT, properties = {"spring.data.mongodb.port: 0"})
+@SpringBootTest(webEnvironment=RANDOM_PORT, properties = {"spring.data.mongodb.port: 0", "eureka.client.enabled=false"})
 public class ApiTestsNonBlocking {
 
     @Autowired

@@ -26,7 +26,7 @@ import static se.yg.api.event.Event.Type.CREATE;
 import static se.yg.api.event.Event.Type.DELETE;
 
 @SpringBootTest(webEnvironment=RANDOM_PORT, properties = {
-        "spring.datasource.url=jdbc:h2:mem:review-db"})
+        "spring.datasource.url=jdbc:h2:mem:review-db", "eureka.client.enabled=false"})
 public class ApiTestsNonBlocking {
 
     @Autowired
