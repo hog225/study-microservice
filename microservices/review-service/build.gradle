@@ -11,9 +11,9 @@ sourceCompatibility = '11'
 repositories {
 	mavenCentral()
 }
-
+// SpringCloudVersion Hoxton.SR8 일 경우 spring-cloud-starter-netflix-eureka-client 가 제대로 안깔리는 잇슈가 있다.
 ext {
-	set('springCloudVersion', "Hoxton.SR8")
+	set('springCloudVersion', "2020.0.3")
 }
 
 dependencyManagement {
