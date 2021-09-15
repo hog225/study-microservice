@@ -244,9 +244,20 @@ https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.htm
 3. Product-composite 서비스는 사용가능한 서비스 정보를 정기적으로 유레카에게 전달 
 4. Product-composite 서비스 내에서 사용가능한 인스턴스 목록에서 대상을 선택할 수 있다. (라운드 로빈으로)
 
-- Client 별로 Eureka Client 가 있어야 한다. 
+- Client 별로 Eureka Client 가 있어야 한다.
+- 상용 환경에서 적절한 기본 구성 값을 가지고 있다. 하지만 이럴경우 유레카 서버와 클라이언트가 연결되는데 많은 시간이 소비될 수 있다.
+- Eureka Server 가 죽으면 MicroService 들은 Caching 된 데이터를 가지고 있어 계속하여 라운드 로빈으로 Request를 보내지만 여기서 인스턴스 한개가 죽게 되면 죽었는지 알 수 없다. 이 때문에 이미 죽은 인스턴스에게 Requet를 보내는 문제가 생길 수 있다. 그럼으로 검색 서버는 절대 죽어서는 안된다.   
 
-### Spring Cloud Load Balancer
+유레카 변수 그룹 
+- eureka.server 서버 
+- eureka.client 유레카 서버와의 통신을 위한 것
+- eureka.instance 유레카 서버에 자신을 등록하여는 마이크로 서비스 인스턴스를 위한 것 
+
+APIs
+- localhost:8761/eureka/apps
+
+#### Spring Cloud Load Balancer
+- product-composite 에서 처럼 Client-Side(Middle?) 에서 Round Robbin으로 로드를 분산해주는 기능이다.  
 
 ### kubernetes
 
@@ -257,6 +268,7 @@ https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.htm
 ## Edge Server
 ---
 - 엣지 서버는 주요서비스를 외부에서 접근하지 못하도록 보호한다.
+- Product-composite 서비스 같은 외부 공개용 서비스를 여렇개 붙힐 수 있을 것 같다. 
 
 ![https://subscription.packtpub.com/book/web_development/9781789613476/10/ch10lvl1sec81/adding-an-edge-server-to-our-system-landscape](/img/edgeserver.png)
 

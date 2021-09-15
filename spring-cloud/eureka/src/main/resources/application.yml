@@ -1,6 +1,7 @@
 server:
   port: 8761
 
+# 독립현 유레카 서버의 표준 구성
 eureka:
   instance:
     hostname: localhost
@@ -12,6 +13,7 @@ eureka:
   # from: https://github.com/spring-cloud-samples/eureka/blob/master/src/main/resources/application.yml
   server:
     waitTimeInMsWhenSyncEmpty: 0
+    #유레카 서버의 시작 시간을 최소화 하기 위한 구성
     response-cache-update-interval-ms: 5000
 
 management.endpoints.web.exposure.include: "*"

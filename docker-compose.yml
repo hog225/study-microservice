@@ -40,8 +40,9 @@ services:
   product-composite:
     build: microservices/product-composite-service
     mem_limit: 350m
-    ports:
-      - "8080:8080"
+#  spring cloud gateway 사용시
+#    ports:
+#      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -49,10 +50,20 @@ services:
         condition: service_healthy
 
   eureka:
-    build: spring-cloud/eureka-server
+    build: spring-cloud/eureka
+    mem_limit: 350m
+#  spring cloud gateway 사용시
+#    ports:
+#      - "8761:8761"
+
+
+  gateway:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    build: spring-cloud/gateway
     mem_limit: 350m
     ports:
-      - "8761:8761"
+      - "8080:8080"
 
   # $ mongo
   mongodb:
