@@ -32,6 +32,7 @@ rmdir /s /Q microservices\review-service\build
 1. curl http://yglocalhost:7000/product-composite/1 -s | jq .
 2. http://localhost:7000/swagger-ui.html
 3. http://localhost:15672/#/queues - rabbit mq guest/guest
+4. curl http://localhost:8080/headerrouting -H "Host: i.feel.lucky:8080" // host 변경 Request
 
 
 ## 환경 
@@ -185,19 +186,12 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 6. docker-compose -f [docker-compose.yml] up 
 7. docker-compose up -d --scale review=2 // review 서비스를 두개로 스케일 업 한다. 
 8. 위 커맨트 안되면  docker-compose up -d --scale review=2 --remove-orphans
+9. 
 
 ### 명령어 
 1. docker ps --format "{{.Image}}", docker ps --format "{{.Image}} : {{.ID}}"
 1. docker-compose exec mongodb mongo product-db --quiet --eval "db.products.find()"
 1. docker exec -it microservicestudy_mysql_1 bash -l //bash 로 들어가기 
-
-## trouble shoot
-1. Swagger 는 implementation 'org.springframework.boot:spring-boot-starter-web' 이 있어야 UI 가 열렸다. 
-2. Swagger 3.0 은 이소스로 동작하지 않음 
-3. mongoDB 쓸때 Entity @Id의 변수 이름은 반드시 id 여야한다. Id 이렇게 하면 findById 할때 조회가 안된다. ..
-4. mongoDB auto-index-creation: true 가 app.yml 에 있어야 unique = true 가 먹는다. 
-5. Lombok 과 MapStruct 같이 사용할때는 build.gradle 에서 선언 순서에 주의 하거나 lombok-mapstruct-binding 를 사용 한다. 
-6. cloud-starter-stream-xxx 를 사용할때 spring-integration-amqp 를 추가로 Gradle에 implemantation 해줘야 정상동작 한다. 
 
 ## mongodb 
 1. mongo product-db --quiet --eval "db.products.find()"
@@ -278,6 +272,11 @@ APIs
 - URL 경로 기반 라우팅, OAuth 2.0, OIDC 에 기반한 엔드포인트 보호 기능 
 - 논 블로킹 API 사용, Zuul 은 블로킹 API
 
+### Netflix Zuul
+- zuul ref https://docs.spring.io/spring-cloud-netflix/docs/2.2.9.RELEASE/reference/html/#router-and-filter-zuul
+- https://coe.gitbook.io/guide/gateway/zuul
+- https://spring.io/guides/gs/routing-and-filtering/
+
 ### Spring Security Oauth
 
 ## 구성중앙화 
@@ -332,4 +331,13 @@ APIs
 - Seluth 의 추적 데이터를 수집 한다. 
 
 
+
+## trouble shoot
+1. Swagger 는 implementation 'org.springframework.boot:spring-boot-starter-web' 이 있어야 UI 가 열렸다.
+2. Swagger 3.0 은 이소스로 동작하지 않음
+3. mongoDB 쓸때 Entity @Id의 변수 이름은 반드시 id 여야한다. Id 이렇게 하면 findById 할때 조회가 안된다. ..
+4. mongoDB auto-index-creation: true 가 app.yml 에 있어야 unique = true 가 먹는다.
+5. Lombok 과 MapStruct 같이 사용할때는 build.gradle 에서 선언 순서에 주의 하거나 lombok-mapstruct-binding 를 사용 한다.
+6. cloud-starter-stream-xxx 를 사용할때 spring-integration-amqp 를 추가로 Gradle에 implemantation 해줘야 정상동작 한다. 
+7. zuul .. 버전을 명시하지 않으니 동작하지 않았다... 그리고 Cloud Hoxton.SR10 은 부트 2.3.x 에서 동작한다. [참조](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-Hoxton-Release-Notes) 그런데 SR12, boot 2.5.5, zuul 2.2.9.RELEASE 환경에서 실행이 안됐음...
 

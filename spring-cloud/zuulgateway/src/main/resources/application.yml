@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+#
+#spring.application.name: zuulgateway
+
+zuul:
+  ignoredServices: '*'  # routes에 정의되지 않은 모든 요청은 무시 함
+  sensitive-headers:    # header의 모든 정보를 bypass 함
+  routes:
+    product-composite:
+    # 라우팅 조건
+      path: /product-composite/**
+      # 라우팅 목적지
+      url: http://localhost:8080/product-composite
+
+ribbon:
+  eureka:
+    enabled: false
+
+#product-composite:
+#  ribbon:
+#    listOfServers:
