@@ -1,8 +1,13 @@
 server:
-  port: 8081
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore\edge.p12
+    key-store-password: testkey
+    key-alias: localhost
 
-#
-#spring.application.name: zuulgateway
+
+spring.application.name: zuulgateway
 
 zuul:
   ignoredServices: '*'  # routes에 정의되지 않은 모든 요청은 무시 함
@@ -18,6 +23,38 @@ ribbon:
   eureka:
     enabled: false
 
+eureka:
+  client:
+    enabled: false
 #product-composite:
 #  ribbon:
 #    listOfServers:
+
+---
+spring:
+  profiles: docker
+
+zuul:
+  ignoredServices: '*'  # routes에 정의되지 않은 모든 요청은 무시 함
+  sensitive-headers:    # header의 모든 정보를 bypass 함
+  routes:
+    product-composite:
+      path: /product-composite/**
+      serviceId: product-composite
+
+app.eureka-server: eureka
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+    enabled: true
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
+ribbon.ServerListRefreshInterval: 5000
+
+ribbon.NFLoadBalancerPingInterval: 5

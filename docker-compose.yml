@@ -43,6 +43,9 @@ services:
 #  spring cloud gateway 사용시
 #    ports:
 #      - "8080:8080"
+# 아래는 Zuul Test 용
+    ports:
+      - "9080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -64,6 +67,14 @@ services:
     mem_limit: 350m
     ports:
       - "8080:8080"
+
+#  zuulgateway:
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    build: spring-cloud/zuulgateway
+#    mem_limit: 350m
+#    ports:
+#      - "8081:8081"
 
   # $ mongo
   mongodb:
@@ -107,4 +118,12 @@ services:
       timeout: 5s
       retries: 10
 
+  config:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,native
+      - ENCRYPT_KEY=${CONFIG_SERVER_ENCRYPT_KEY}
+    volumes:
+      - $PWD/config-repo:/config-repo
+    build: spring-cloud/config
+    mem_limit: 350m
 

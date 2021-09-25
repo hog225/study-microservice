@@ -33,6 +33,7 @@ rmdir /s /Q microservices\review-service\build
 2. http://localhost:7000/swagger-ui.html
 3. http://localhost:15672/#/queues - rabbit mq guest/guest
 4. curl http://localhost:8080/headerrouting -H "Host: i.feel.lucky:8080" // host 변경 Request
+5. zuul filter port 8081 docker 에는 없음 
 
 
 ## 환경 
@@ -170,23 +171,29 @@ DispatchServlet 이후 실행되면 특정 혹은 모든 요청을 가로채서 
 
 4. 스프링폭스 
 공개 API 문서화, 스웨거 기반의 문서를 런타임에 생성하는 스프링 폭스를 사용 swagger $HOST:$PORT/swagger-ui/index.html
+## gradle 
+3. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
+4. ./gradlew build ,  gradle.bat build -x test
 
 ## Docker
-1. 스프링 프로파일 설정 resource 및에 application.yml
+1. 스프링 프로파일(spring.profiles = docker) 설정 application.yml
 2. docker 파일 설정 
-1. 팻자 파일 빌드 => gradlew :mi...:pro...:build (요렇게 하면 의존 프로젝트 까지 빌드됨)
-1. ./gradlew build ,  gradle.bat build -x test
-1. docker-compose build
-1. docker-compose up -d
-2. docker build -t product-service . 
+
+
+### docker
+1. docker build -t product-service . - build with docker file same path
+5. docker logs my-prd-srv -f
 3. docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service
 4. docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name my-prd-srv product-service
-5. docker logs my-prd-srv -f
+
+### Docker-compose
+1. docker-compose build
+1. docker-compose up -d
 5. .\gradlew.bat build -x test && docker-compose build && docker-compose up
 6. docker-compose -f [docker-compose.yml] up 
 7. docker-compose up -d --scale review=2 // review 서비스를 두개로 스케일 업 한다. 
 8. 위 커맨트 안되면  docker-compose up -d --scale review=2 --remove-orphans
-9. 
+
 
 ### 명령어 
 1. docker ps --format "{{.Image}}", docker ps --format "{{.Image}} : {{.ID}}"
@@ -277,7 +284,9 @@ APIs
 - https://coe.gitbook.io/guide/gateway/zuul
 - https://spring.io/guides/gs/routing-and-filtering/
 
-### Spring Security Oauth
+## Spring Security
+- 인증서 생성 keytool -genkeypair -alias localhost -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore edge.p12 -validity 3650
+- 예제는 ZuulGateway 에..
 
 ## 구성중앙화 
 ---
