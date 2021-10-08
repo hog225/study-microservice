@@ -88,6 +88,14 @@ logging:
     root: INFO
     org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
     org.springframework.cloud.gateway: TRACE
+spring:
+  zipkin:
+    sender:
+      type: rabbit
+      #모든데이터 보냄
+  sleuth:
+    sampler:
+      probability: 1.0
 
 ---
 spring.profiles: docker

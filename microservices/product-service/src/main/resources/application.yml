@@ -62,6 +62,14 @@ management.endpoints.web.exposure.include: "*"
 
 # 유레카 서비스가 각 마이크로 서비스를 식별하는 이름
 spring.application.name: product
+spring:
+  zipkin:
+    sender:
+      type: rabbit
+      #모든데이터 보냄
+  sleuth:
+    sampler:
+      probability: 1.0
 
 eureka:
   client:

@@ -17,3 +17,11 @@ eureka:
     response-cache-update-interval-ms: 5000
 
 management.endpoints.web.exposure.include: "*"
+spring:
+  zipkin:
+    sender:
+      type: rabbit
+      #모든데이터 보냄
+  sleuth:
+    sampler:
+      probability: 1.0

@@ -32,6 +32,32 @@ spring.cloud.stream:
       producer:
         required-groups: auditGroup
 
+app.product-service.timeoutSec: 2
+# circuit breaker
+## 재시도 메커니즘
+resilience4j.retry:
+  backends:
+    product:
+      maxRetryAttempts: 3
+      waitDuration: 1000
+      retryExceptions:
+        - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+
+management.health.circuitbreakers.enabled: true
+
+resilience4j.circuitbreaker:
+  backends:
+    product:
+      registerHealthIndicator: true
+      ringBufferSizeInClosedState: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
+      ringBufferSizeInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      ignoreExceptions:
+        - se.yg.util.exceptions.InvalidInputException
+        - se.yg.util.exceptions.NotFoundException
+
 # kafka - 메시지 큐
 spring.cloud.stream.kafka.binder:
   brokers: 127.0.0.1
@@ -55,6 +81,14 @@ spring:
     group:
       "docker": "docker, swg"
     active: swg
+  zipkin:
+    sender:
+      type: rabbit
+      #모든데이터 보냄
+  sleuth:
+    sampler:
+      probability: 1.0
+
 
 # Actuator
 management.endpoint.health.show-details: "ALWAYS"
@@ -75,6 +109,7 @@ eureka:
 ribbon.ServerListRefreshInterval: 5000
 
 ribbon.NFLoadBalancerPingInterval: 5
+
 
 ---
 spring:

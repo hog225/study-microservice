@@ -1,6 +1,7 @@
 package se.yg.microservices.composite.product.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,11 +14,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import se.yg.api.core.product.Product;
@@ -32,6 +36,8 @@ import se.yg.util.exceptions.NotFoundException;
 import se.yg.util.http.HttpErrorInfo;
 
 import java.io.IOException;
+import java.net.URI;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +74,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     private final WebClient.Builder webClientBuilder;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
+    private final int productServiceTimeoutSec;
 
 //    private final String productServiceUrl;
 //    private final String recommendationServiceUrl;
@@ -94,7 +101,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             RestTemplate restTemplate,
             //WebClient.Builder webClient,
             MessageSources messageSources,
-            ObjectMapper mapper
+            ObjectMapper mapper,
 //              Eureka 서비스 이전
 //            @Value("${app.product-service.host}") String productServiceHost,
 //            @Value("${app.product-service.port}") int    productServicePort,
@@ -104,6 +111,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 //
 //            @Value("${app.review-service.host}") String reviewServiceHost,
 //            @Value("${app.review-service.port}") int    reviewServicePort
+            @Value("${app.product-service.timeoutSec}") int productServiceTimeoutSec
 
     ) {
 
@@ -112,6 +120,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         //this.webClient = webClient.build();
         this.webClientBuilder = webClientBuilder;
         this.messageSources = messageSources;
+        this.productServiceTimeoutSec = productServiceTimeoutSec;
 
 //        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort;
 //        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort;
@@ -159,15 +168,24 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 //    }
 
     @Override
-    public Mono<Product> getProduct(int productId) {
+    @CircuitBreaker(label = "product")
+    @Retry(name="product")
+    public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(productServiceUrl + "/product/{productId}?delay={delay}&faultPercent={faultPercent}")
+                .build(productId, delay, faultPercent);
 
 
-
-        String url = productServiceUrl + "/product/" + productId;
-        LOG.debug("Will call the getProduct API on URL: {}", url);
+//        String url = productServiceUrl + "/product/" + productId;
+        LOG.debug("Will call the getProduct API on URL: {}", uri);
 
         //논블로킹
-        return getWebClient().get().uri(url).retrieve().bodyToMono(Product.class).log().onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
+        return getWebClient().get().uri(uri)
+                .retrieve().bodyToMono(Product.class).log()
+                .onErrorMap(WebClientResponseException.class, ex -> handleException(ex))
+                .timeout(Duration.ofSeconds(productServiceTimeoutSec));
+
         //return webClient.get().uri(url).retrieve().bodyToMono(Product.class).log().onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
     }
 
@@ -326,11 +344,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     public Mono<Health> getProductHealth(){
         return getHealth(productServiceUrl);
     }
-
     public Mono<Health> getRecommendationHealth() {
         return getHealth(recommendationServiceUrl);
     }
-
     public Mono<Health> getReviewHealth() {
         return getHealth(reviewServiceUrl);
     }

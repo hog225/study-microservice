@@ -31,7 +31,11 @@ public interface ProductService {
         produces = "application/json")
      //Product getProduct(@PathVariable int productId);
     //논블로킹 동기 API
-    Mono<Product> getProduct(@PathVariable int productId);
+    Mono<Product> getProduct(
+            @PathVariable int productId,
+            @RequestParam(value = "delay", required = false, defaultValue = "0") int delay,
+            @RequestParam(value = "faultPercent", required = false, defaultValue = "0") int faultPercent
+    );
 
     /**
      * Sample usage:

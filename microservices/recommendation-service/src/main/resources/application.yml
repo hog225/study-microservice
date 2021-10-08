@@ -7,6 +7,14 @@ spring.data.mongodb:
   database: recommendation-db
   auto-index-creation: true
 
+spring:
+  zipkin:
+    sender:
+      type: rabbit
+      #모든데이터 보냄
+  sleuth:
+    sampler:
+      probability: 1.0
 
 spring.cloud.stream:
   defaultBinder: rabbit

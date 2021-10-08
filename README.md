@@ -326,6 +326,11 @@ APIs
 ## 분산추적
 ---
 
+trace: 워크플로에 대한 추적 정보
+Span: 작업의 단위 라고 할 수 있는 트리의 읿부분 
+
+큐를 이용해 비동기로 추적 데이터를 전송해야 런타임 디펜던시를 줄일 수 있다. 
+
 ### Spring Seluth
 - 구글 Dapper 기반이다. 
 - Request 에 추적 ID(Trace ID) 같은 것을 붙혀서 복잡한 Request를 추적할 수 있도록 해준다. 
@@ -334,11 +339,12 @@ APIs
   - Trace ID: 최초의 Request 와 마지막 Request 가 동일한 값을 같는다. 
 - 추적트리: 전체 워크플로의 추적 정보  
 - 네이버에는 Pinpoint 가 있다. 
+- 
 
 ### Zipkin
 - 트워터에서 만듦
 - Seluth 의 추적 데이터를 수집 한다. 
-
+- 9411
 
 
 ## trouble shoot
@@ -349,4 +355,6 @@ APIs
 5. Lombok 과 MapStruct 같이 사용할때는 build.gradle 에서 선언 순서에 주의 하거나 lombok-mapstruct-binding 를 사용 한다.
 6. cloud-starter-stream-xxx 를 사용할때 spring-integration-amqp 를 추가로 Gradle에 implemantation 해줘야 정상동작 한다. 
 7. zuul .. 버전을 명시하지 않으니 동작하지 않았다... 그리고 Cloud Hoxton.SR10 은 부트 2.3.x 에서 동작한다. [참조](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-Hoxton-Release-Notes) 그런데 SR12, boot 2.5.5, zuul 2.2.9.RELEASE 환경에서 실행이 안됐음...
+8. 이 코드의 문제는 Docker 에 너무 의존적이다. 아무래도 개발하는 서버를 개별적으로 실행하게 하는 것도 가능해야 할 듯 하다. 
+
 

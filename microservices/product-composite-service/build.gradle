@@ -24,6 +24,7 @@ repositories {
 // SpringCloudVersion Hoxton.SR8 일 경우 spring-cloud-starter-netflix-eureka-client 가 제대로 안깔리는 잇슈가 있다.
 ext {
 	set('springCloudVersion', "2020.0.3")
+	resilience4jVersion = "1.7.0"
 }
 
 dependencyManagement {
@@ -58,7 +59,23 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.4'
 	implementation "org.springframework.integration:spring-integration-amqp:5.5.3"
 	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+
+	implementation("io.github.resilience4j:resilience4j-spring-boot2:${resilience4jVersion}")
+	implementation("io.github.resilience4j:resilience4j-reactor:${resilience4jVersion}")
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-sleuth-zipkin
+	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin:3.0.3'
+
+
+
+
+
 }
+
+
+
+
 
 test {
 	useJUnitPlatform()

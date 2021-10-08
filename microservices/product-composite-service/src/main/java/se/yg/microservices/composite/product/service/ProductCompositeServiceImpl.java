@@ -1,8 +1,10 @@
 package se.yg.microservices.composite.product.service;
 
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.integration.handler.advice.RequestHandlerCircuitBreakerAdvice;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import se.yg.api.composite.product.*;
@@ -74,12 +76,14 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 //    }
 
     @Override
-    public Mono<ProductAggregate> getCompositeProduct(int productId){
+    public Mono<ProductAggregate> getCompositeProduct(int productId, int delay, int faultPercent){
         //논블로킹
         Mono<ProductAggregate> result =  Mono.zip(values ->
                 createProductAggregate((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress())
                 // zip 메서드는 아래 세개를 병렬로 호출한다.
-                ,integration.getProduct(productId)
+                ,integration.getProduct(productId, delay, faultPercent)
+
+                        .onErrorReturn(CallNotPermittedException.class, getProductFallbackValue(productId))
                 ,integration.getRecommendations(productId).collectList()
                 ,integration.getReviews(productId).collectList()
         ).doOnError(ex -> log.warn("getCompositeProduct: aggregate entity found for productId: {}", ex.toString()))
@@ -128,5 +132,18 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
         ServiceAddresses serviceAddresses = new ServiceAddresses(serviceAddress, productAddress, reviewAddress, recommendationAddress);
 
         return new ProductAggregate(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
+    }
+
+    private Product getProductFallbackValue(int productId) {
+
+        log.warn("Creating a fallback product for productId = {}", productId);
+
+        if (productId == 13) {
+            String errMsg = "Product Id: " + productId + " not found in fallback cache!";
+            log.warn(errMsg);
+            throw new NotFoundException(errMsg);
+        }
+
+        return new Product(productId, "Fallback product" + productId, productId, serviceUtil.getServiceAddress());
     }
 }
